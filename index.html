@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五要素竞品分析 · 工作流介绍</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; }
+
+        /* 渐变背景页头 */
+        .hero { background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); }
+
+        /* 流程步骤卡片 */
+        .step-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 12px -2px rgba(0,0,0,0.06);
+            overflow: hidden;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .step-card:hover { box-shadow: 0 8px 28px -4px rgba(0,0,0,0.12); transform: translateY(-2px); }
+
+        .step-header { padding: 18px 22px 14px; display: flex; align-items: flex-start; gap: 14px; }
+        .step-num { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+        .step-body { padding: 0 22px 18px; }
+
+        /* 技能胶囊 */
+        .skill-chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px 3px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+        .skill-chip .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+        /* 颜色主题 */
+        .s1 .step-num { background: #f0f4ff; color: #4f46e5; }
+        .s2 .step-num { background: #fef9ec; color: #b45309; }
+        .s3 .step-num { background: #ecfdf5; color: #059669; }
+        .s4 .step-num { background: #fdf2f8; color: #9333ea; }
+        .s5 .step-num { background: #fff1f0; color: #dc2626; }
+        .s6 .step-num { background: #f0fdfa; color: #0d9488; }
+
+        .chip-s1 { background: #eef2ff; color: #4338ca; border: 1px solid #c7d2fe; }
+        .chip-s1 .dot { background: #6366f1; }
+        .chip-s2 { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+        .chip-s2 .dot { background: #f59e0b; }
+        .chip-s3 { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+        .chip-s3 .dot { background: #10b981; }
+        .chip-s4 { background: #fdf4ff; color: #6b21a8; border: 1px solid #e9d5ff; }
+        .chip-s4 .dot { background: #a855f7; }
+        .chip-s5 { background: #fff5f5; color: #9b1c1c; border: 1px solid #fecaca; }
+        .chip-s5 .dot { background: #ef4444; }
+        .chip-s6 { background: #f0fdfa; color: #134e4a; border: 1px solid #99f6e4; }
+        .chip-s6 .dot { background: #14b8a6; }
+
+        /* 分隔箭头 */
+        .arrow-down { display: flex; justify-content: center; align-items: center; height: 32px; color: #cbd5e1; }
+
+        /* 工具链图谱 */
+        .tool-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        @media (max-width: 640px) { .tool-grid { grid-template-columns: 1fr; } }
+        .tool-card { border-radius: 10px; padding: 14px 16px; border: 1px solid; }
+
+        /* 输出示例条 */
+        .output-bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #f8fafc; border-radius: 7px; margin-top: 8px; border: 1px solid #f1f5f9; }
+        .output-bar .icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+
+        /* 层级徽章 */
+        .layer-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 1px 8px; border-radius: 999px; letter-spacing: 0.04em; }
+
+        /* 连接线段 */
+        .connector { width: 2px; background: linear-gradient(180deg, #e2e8f0 0%, #c7d2fe 100%); height: 24px; margin: 0 auto; }
+    </style>
+</head>
+<body class="bg-slate-50">
+
+<!-- 页头 -->
+<div class="hero px-6 py-14 text-center">
+    <p class="text-indigo-300 text-xs font-bold tracking-widest uppercase mb-3">AI 技能体系 · Workflow Guide</p>
+    <h1 class="text-white text-3xl font-black mb-3 leading-tight">五要素竞品分析<br>全流程工作手册</h1>
+    <p class="text-indigo-200 text-sm max-w-xl mx-auto leading-relaxed">从一句话需求到可交付的 HTML 分析报告，每一层有专属技能支撑，每一步骤有明确的输出物。</p>
+    <div class="flex justify-center flex-wrap gap-2 mt-6">
+        <span class="inline-block px-3 py-1 rounded-full bg-white/10 text-white text-xs font-semibold border border-white/20">4 大步骤</span>
+        <span class="inline-block px-3 py-1 rounded-full bg-white/10 text-white text-xs font-semibold border border-white/20">4 个专属技能</span>
+        <span class="inline-block px-3 py-1 rounded-full bg-white/10 text-white text-xs font-semibold border border-white/20">5 个分析层次</span>
+        <span class="inline-block px-3 py-1 rounded-full bg-white/10 text-white text-xs font-semibold border border-white/20">1 份 HTML 报告</span>
+    </div>
+</div>
+
+<div class="max-w-3xl mx-auto px-4 py-10">
+
+    <!-- ─── 流程总览 ─── -->
+    <div class="mb-10">
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 text-center">整体流程</p>
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+            <div class="flex items-center gap-0 overflow-x-auto pb-2">
+                <!-- Step boxes -->
+                <div class="flex flex-col items-center min-w-[72px]">
+                    <div class="w-11 h-11 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-base mb-1.5">01</div>
+                    <span class="text-center text-[10px] font-semibold text-slate-500 leading-tight">明确<br>分析对象</span>
+                </div>
+                <div class="flex-1 flex items-center justify-center pb-4">
+                    <div class="h-0.5 w-full bg-gradient-to-r from-indigo-200 to-amber-200"></div>
+                    <svg class="w-3 h-3 text-amber-300 -ml-1 flex-shrink-0" fill="currentColor" viewBox="0 0 6 10"><path d="M1 1l4 4-4 4"/></svg>
+                </div>
+                <div class="flex flex-col items-center min-w-[72px]">
+                    <div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 font-black text-base mb-1.5">02</div>
+                    <span class="text-center text-[10px] font-semibold text-slate-500 leading-tight">战略层<br>范围层</span>
+                </div>
+                <div class="flex-1 flex items-center justify-center pb-4">
+                    <div class="h-0.5 w-full bg-gradient-to-r from-amber-200 to-emerald-200"></div>
+                    <svg class="w-3 h-3 text-emerald-300 -ml-1 flex-shrink-0" fill="currentColor" viewBox="0 0 6 10"><path d="M1 1l4 4-4 4"/></svg>
+                </div>
+                <div class="flex flex-col items-center min-w-[72px]">
+                    <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 font-black text-base mb-1.5">03</div>
+                    <span class="text-center text-[10px] font-semibold text-slate-500 leading-tight">结构层<br>框架层</span>
+                </div>
+                <div class="flex-1 flex items-center justify-center pb-4">
+                    <div class="h-0.5 w-full bg-gradient-to-r from-emerald-200 to-purple-200"></div>
+                    <svg class="w-3 h-3 text-purple-300 -ml-1 flex-shrink-0" fill="currentColor" viewBox="0 0 6 10"><path d="M1 1l4 4-4 4"/></svg>
+                </div>
+                <div class="flex flex-col items-center min-w-[72px]">
+                    <div class="w-11 h-11 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 font-black text-base mb-1.5">04</div>
+                    <span class="text-center text-[10px] font-semibold text-slate-500 leading-tight">表现层<br>视觉</span>
+                </div>
+                <div class="flex-1 flex items-center justify-center pb-4">
+                    <div class="h-0.5 w-full bg-gradient-to-r from-purple-200 to-teal-200"></div>
+                    <svg class="w-3 h-3 text-teal-300 -ml-1 flex-shrink-0" fill="currentColor" viewBox="0 0 6 10"><path d="M1 1l4 4-4 4"/></svg>
+                </div>
+                <div class="flex flex-col items-center min-w-[72px]">
+                    <div class="w-11 h-11 rounded-xl bg-teal-50 flex items-center justify-center text-teal-600 font-black text-base mb-1.5">05</div>
+                    <span class="text-center text-[10px] font-semibold text-slate-500 leading-tight">结论与<br>交付</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── 详细步骤 ─── -->
+    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5 text-center">分步详解</p>
+
+    <!-- STEP 1 -->
+    <div class="step-card s1 mb-3">
+        <div class="step-header">
+            <div class="step-num">01</div>
+            <div>
+                <div class="flex items-center gap-2 mb-0.5">
+                    <h3 class="text-base font-bold text-slate-800">明确分析对象与目标</h3>
+                    <span class="layer-badge bg-indigo-50 text-indigo-600">启动</span>
+                </div>
+                <p class="text-xs text-slate-500">确定要分析哪些产品、分析目的是什么</p>
+            </div>
+        </div>
+        <div class="step-body">
+            <div class="bg-slate-50 rounded-lg p-4 text-sm text-slate-600 leading-relaxed mb-3">
+                <ul class="space-y-1.5">
+                    <li class="flex items-start gap-2"><span class="text-indigo-400 mt-0.5">▸</span>确认参与分析的竞品数量（建议 2-3 个）和被分析产品的类型（B端SaaS / C端产品）</li>
+                    <li class="flex items-start gap-2"><span class="text-indigo-400 mt-0.5">▸</span>明确分析驱动的目标：是为了视觉升级？产品重构？导航优化？</li>
+                    <li class="flex items-start gap-2"><span class="text-indigo-400 mt-0.5">▸</span>加载主框架技能 <code class="bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded text-xs font-mono">ux-five-elements-competitor-analysis</code>，按五要素框架启动</li>
+                </ul>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <span class="skill-chip chip-s1"><span class="dot"></span>ux-five-elements-competitor-analysis</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <!-- STEP 2 -->
+    <div class="step-card s2 mb-3">
+        <div class="step-header">
+            <div class="step-num">02</div>
+            <div>
+                <div class="flex items-center gap-2 mb-0.5">
+                    <h3 class="text-base font-bold text-slate-800">战略层 &amp; 范围层分析</h3>
+                    <span class="layer-badge bg-amber-50 text-amber-600">抽象层</span>
+                </div>
+                <p class="text-xs text-slate-500">产品定位 · 目标用户 · 商业模式 · 功能范围</p>
+            </div>
+        </div>
+        <div class="step-body">
+            <div class="bg-slate-50 rounded-lg p-4 text-sm text-slate-600 leading-relaxed mb-3">
+                <ul class="space-y-1.5">
+                    <li class="flex items-start gap-2"><span class="text-amber-400 mt-0.5">▸</span>通过官网、定价页、文档整理各产品的核心定位、目标用户、商业模式</li>
+                    <li class="flex items-start gap-2"><span class="text-amber-400 mt-0.5">▸</span><strong class="text-slate-700">强制：每个产品生成唯一一张功能架构图</strong>，调用 <code class="bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded text-xs font-mono">product-function-map</code> 技能</li>
+                    <li class="flex items-start gap-2"><span class="text-amber-400 mt-0.5">▸</span>功能架构图为 HTML 输出时使用纯 CSS 树形图方案（参见 references/html-implementation.md）</li>
+                    <li class="flex items-start gap-2"><span class="text-amber-400 mt-0.5">▸</span>图后补充战略层&范围层横向对比表格，总结定位差异与壁垒</li>
+                </ul>
+            </div>
+
+            <!-- 功能架构图示意 -->
+            <div class="bg-amber-50 rounded-lg p-3 mb-3 border border-amber-100">
+                <p class="text-xs font-bold text-amber-700 mb-2">📐 功能架构图结构（product-function-map 技能输出）</p>
+                <div class="flex items-start gap-2 text-xs text-amber-800 font-mono bg-white rounded p-2 border border-amber-100 leading-relaxed">
+                    <span>产品名称<br>├── 功能域A<br>│&nbsp;&nbsp;&nbsp;├── 子功能1<br>│&nbsp;&nbsp;&nbsp;└── 子功能2★<br>├── 功能域B<br>│&nbsp;&nbsp;&nbsp;└── 子功能3<br>└── 功能域C<br>&nbsp;&nbsp;&nbsp;&nbsp;└── 子功能4★</span>
+                </div>
+                <p class="text-xs text-amber-600 mt-1.5">★ = 差异化/核心能力标注 · 3层结构 · 3-8个功能域</p>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+                <span class="skill-chip chip-s1"><span class="dot"></span>ux-five-elements-competitor-analysis</span>
+                <span class="skill-chip chip-s2"><span class="dot"></span>product-function-map</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <!-- STEP 3 -->
+    <div class="step-card s3 mb-3">
+        <div class="step-header">
+            <div class="step-num">03</div>
+            <div>
+                <div class="flex items-center gap-2 mb-0.5">
+                    <h3 class="text-base font-bold text-slate-800">结构层 &amp; 框架层分析</h3>
+                    <span class="layer-badge bg-emerald-50 text-emerald-600">中间层</span>
+                </div>
+                <p class="text-xs text-slate-500">信息架构 · 导航框架 · 核心任务动线 · 页面布局</p>
+            </div>
+        </div>
+        <div class="step-body">
+            <div class="bg-slate-50 rounded-lg p-4 text-sm text-slate-600 leading-relaxed mb-3">
+                <ul class="space-y-1.5">
+                    <li class="flex items-start gap-2"><span class="text-emerald-500 mt-0.5">▸</span>收集竞品真实功能界面截图（Dashboard、列表页、详情页等），调用 <code class="bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded text-xs font-mono">b2b-ui-collector</code></li>
+                    <li class="flex items-start gap-2"><span class="text-emerald-500 mt-0.5">▸</span>对截图进行热区标注（导航区、筛选区、主任务区、结果区），调用 <code class="bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded text-xs font-mono">competitor-ui-annotation</code></li>
+                    <li class="flex items-start gap-2"><span class="text-emerald-500 mt-0.5">▸</span>提取并对比：导航框架（顶导+侧导 / 纯侧导）、页面布局模式（T字型 / 口字型）</li>
+                    <li class="flex items-start gap-2"><span class="text-emerald-500 mt-0.5">▸</span>梳理核心任务完整链路（如：告警触发→排障→根因定位的动线步数）</li>
+                </ul>
+            </div>
+
+            <!-- 热区标注说明 -->
+            <div class="bg-emerald-50 rounded-lg p-3 mb-3 border border-emerald-100">
+                <p class="text-xs font-bold text-emerald-700 mb-2">🔍 热区标注规范（competitor-ui-annotation 技能输出）</p>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div class="bg-white rounded p-2 border border-emerald-100">
+                        <span class="font-semibold text-emerald-700">标注区域</span>
+                        <p class="text-slate-500 mt-0.5">导航区 · 搜索/筛选区 · 主任务区 · 批量操作区 · 结果展示区</p>
+                    </div>
+                    <div class="bg-white rounded p-2 border border-emerald-100">
+                        <span class="font-semibold text-emerald-700">坐标格式</span>
+                        <p class="text-slate-500 mt-0.5">top/left/width/height 用百分比表示，支持右侧抽屉叠加场景</p>
+                    </div>
+                </div>
+                <p class="text-xs text-emerald-600 mt-1.5">⚠️ 表现层截图不做热区标注，避免干扰视觉观察</p>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+                <span class="skill-chip chip-s1"><span class="dot"></span>ux-five-elements-competitor-analysis</span>
+                <span class="skill-chip chip-s3"><span class="dot"></span>b2b-ui-collector</span>
+                <span class="skill-chip chip-s3"><span class="dot"></span>competitor-ui-annotation</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <!-- STEP 4 -->
+    <div class="step-card s4 mb-3">
+        <div class="step-header">
+            <div class="step-num">04</div>
+            <div>
+                <div class="flex items-center gap-2 mb-0.5">
+                    <h3 class="text-base font-bold text-slate-800">表现层视觉分析</h3>
+                    <span class="layer-badge bg-purple-50 text-purple-600">具体层</span>
+                </div>
+                <p class="text-xs text-slate-500">字 · 形 · 色 · 构 · 质 — 五维视觉深度剖析</p>
+            </div>
+        </div>
+        <div class="step-body">
+            <div class="bg-slate-50 rounded-lg p-4 text-sm text-slate-600 leading-relaxed mb-3">
+                <ul class="space-y-1.5">
+                    <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">▸</span>同样调用 <code class="bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded text-xs font-mono">b2b-ui-collector</code> 收集表现层截图（日志页、Dashboard、配置页），<strong class="text-slate-700">不做标注</strong></li>
+                    <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">▸</span>从「字 · 形 · 色 · 构 · 质」5个维度逐一拆解，每个维度输出关键数值或特征描述</li>
+                    <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">▸</span>提炼整体视觉风格关键词（如：极客感 / 商务极简 / 宽松舒缓）</li>
+                </ul>
+            </div>
+
+            <!-- 五维表 -->
+            <div class="grid grid-cols-5 gap-1.5 mb-3">
+                <div class="bg-purple-50 rounded-lg p-2 text-center border border-purple-100">
+                    <div class="text-base mb-0.5">Ａ</div>
+                    <div class="text-xs font-bold text-purple-700">字</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">字号<br>梯度<br>字重</div>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-2 text-center border border-purple-100">
+                    <div class="text-base mb-0.5">◻</div>
+                    <div class="text-xs font-bold text-purple-700">形</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">图标<br>圆角<br>图形</div>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-2 text-center border border-purple-100">
+                    <div class="text-base mb-0.5">🎨</div>
+                    <div class="text-xs font-bold text-purple-700">色</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">品牌色<br>辅助色<br>模式</div>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-2 text-center border border-purple-100">
+                    <div class="text-base mb-0.5">⊞</div>
+                    <div class="text-xs font-bold text-purple-700">构</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">间距<br>密度<br>留白</div>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-2 text-center border border-purple-100">
+                    <div class="text-base mb-0.5">✦</div>
+                    <div class="text-xs font-bold text-purple-700">质</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">质感<br>插画<br>情感</div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+                <span class="skill-chip chip-s1"><span class="dot"></span>ux-five-elements-competitor-analysis</span>
+                <span class="skill-chip chip-s3"><span class="dot"></span>b2b-ui-collector</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <!-- STEP 5 -->
+    <div class="step-card s6 mb-3">
+        <div class="step-header">
+            <div class="step-num">05</div>
+            <div>
+                <div class="flex items-center gap-2 mb-0.5">
+                    <h3 class="text-base font-bold text-slate-800">综合结论 &amp; 报告交付</h3>
+                    <span class="layer-badge bg-teal-50 text-teal-600">输出</span>
+                </div>
+                <p class="text-xs text-slate-500">行动建议 · HTML 报告 · GitHub Pages 发布</p>
+            </div>
+        </div>
+        <div class="step-body">
+            <div class="bg-slate-50 rounded-lg p-4 text-sm text-slate-600 leading-relaxed mb-3">
+                <ul class="space-y-1.5">
+                    <li class="flex items-start gap-2"><span class="text-teal-500 mt-0.5">▸</span>汇总五层分析，提炼各竞品核心优势（结构化列表）</li>
+                    <li class="flex items-start gap-2"><span class="text-teal-500 mt-0.5">▸</span>针对「我方产品」输出交互优化建议 + 视觉升级建议（具体可落地）</li>
+                    <li class="flex items-start gap-2"><span class="text-teal-500 mt-0.5">▸</span>整合所有内容，生成单页 HTML 报告（Tailwind CSS，含响应式适配）</li>
+                    <li class="flex items-start gap-2"><span class="text-teal-500 mt-0.5">▸</span>本地预览确认后，通过 GitHub API 上传到 GitHub Pages 发布分享链接</li>
+                </ul>
+            </div>
+
+            <!-- 输出物 -->
+            <div class="output-bar">
+                <div class="icon bg-indigo-100">📄</div>
+                <div class="flex-1">
+                    <p class="text-xs font-bold text-slate-700">HTML 分析报告</p>
+                    <p class="text-xs text-slate-400">单页 · Tailwind CSS · 响应式 · 含配图标注</p>
+                </div>
+            </div>
+            <div class="output-bar">
+                <div class="icon bg-emerald-100">🌐</div>
+                <div class="flex-1">
+                    <p class="text-xs font-bold text-slate-700">GitHub Pages 链接</p>
+                    <p class="text-xs text-slate-400">jiangyaoxi007-wq.github.io/{repo-name}/</p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2 mt-3">
+                <span class="skill-chip chip-s6"><span class="dot"></span>github-deploy-publisher</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── 技能工具链全景 ─── -->
+    <div class="mt-10 mb-4">
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5 text-center">技能工具链全景</p>
+        <div class="tool-grid">
+            <div class="tool-card bg-indigo-50 border-indigo-200">
+                <div class="text-lg mb-1">🧭</div>
+                <p class="text-xs font-black text-indigo-700 mb-1">ux-five-elements<br>-competitor-analysis</p>
+                <p class="text-xs text-slate-500 leading-relaxed">主框架技能。定义五层分析结构，协调所有子技能，生成最终报告骨架。</p>
+                <p class="text-xs font-semibold text-indigo-500 mt-2">角色：指挥官</p>
+            </div>
+            <div class="tool-card bg-amber-50 border-amber-200">
+                <div class="text-lg mb-1">🗺️</div>
+                <p class="text-xs font-black text-amber-700 mb-1">product-function-map</p>
+                <p class="text-xs text-slate-500 leading-relaxed">功能架构图技能。每产品生成唯一一张图，清晰展示功能范围，支持 Mermaid 和纯 CSS 两种渲染。</p>
+                <p class="text-xs font-semibold text-amber-500 mt-2">角色：范围层专家</p>
+            </div>
+            <div class="tool-card bg-emerald-50 border-emerald-200">
+                <div class="text-lg mb-1">📸</div>
+                <p class="text-xs font-black text-emerald-700 mb-1">b2b-ui-collector</p>
+                <p class="text-xs text-slate-500 leading-relaxed">B端界面截图收集。自动搜索筛选真实功能界面（非营销图），为结构层和表现层提供图源。</p>
+                <p class="text-xs font-semibold text-emerald-500 mt-2">角色：素材官</p>
+            </div>
+            <div class="tool-card bg-green-50 border-green-200">
+                <div class="text-lg mb-1">📍</div>
+                <p class="text-xs font-black text-green-700 mb-1">competitor-ui-annotation</p>
+                <p class="text-xs text-slate-500 leading-relaxed">界面热区标注。对截图标出导航区/筛选区/主任务区等重点区域，仅用于结构层&框架层分析。</p>
+                <p class="text-xs font-semibold text-green-500 mt-2">角色：结构层标注师</p>
+            </div>
+            <div class="tool-card bg-teal-50 border-teal-200">
+                <div class="text-lg mb-1">🚀</div>
+                <p class="text-xs font-black text-teal-700 mb-1">github-deploy-publisher</p>
+                <p class="text-xs text-slate-500 leading-relaxed">GitHub 发布技能。通过 API 将 HTML 报告推送到 GitHub Pages，无需本地 git 环境。</p>
+                <p class="text-xs font-semibold text-teal-500 mt-2">角色：发布官</p>
+            </div>
+            <div class="tool-card bg-slate-50 border-slate-200">
+                <div class="text-lg mb-1">📋</div>
+                <p class="text-xs font-black text-slate-600 mb-1">five-elements-template.md</p>
+                <p class="text-xs text-slate-500 leading-relaxed">标准 Markdown 输出模板。每层都有对应占位结构，可直接复用生成文字版报告。</p>
+                <p class="text-xs font-semibold text-slate-400 mt-2">角色：模板参考</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── 分工规则一览 ─── -->
+    <div class="mt-8 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
+            <p class="text-sm font-bold text-slate-700">📌 关键分工规则（执行时必须遵守）</p>
+        </div>
+        <div class="divide-y divide-slate-100">
+            <div class="px-6 py-3 flex items-start gap-4 text-sm">
+                <span class="flex-shrink-0 font-bold text-amber-600 w-28">战略&范围层</span>
+                <span class="text-slate-600">每个产品<strong class="text-slate-800">有且仅有一张</strong>功能架构图，调用 product-function-map 生成，不可用文字列表代替</span>
+            </div>
+            <div class="px-6 py-3 flex items-start gap-4 text-sm">
+                <span class="flex-shrink-0 font-bold text-emerald-600 w-28">结构&框架层</span>
+                <span class="text-slate-600">截图<strong class="text-slate-800">必须热区标注</strong>，调用 competitor-ui-annotation，标清导航/筛选/主任务/结果区</span>
+            </div>
+            <div class="px-6 py-3 flex items-start gap-4 text-sm">
+                <span class="flex-shrink-0 font-bold text-purple-600 w-28">表现层</span>
+                <span class="text-slate-600">截图<strong class="text-slate-800">不做热区标注</strong>，只提供真实原始界面，避免干扰字形色构质的视觉感知</span>
+            </div>
+            <div class="px-6 py-3 flex items-start gap-4 text-sm">
+                <span class="flex-shrink-0 font-bold text-teal-600 w-28">发布</span>
+                <span class="text-slate-600">本地预览确认后再推送 GitHub，通过 Python + GitHub API 上传（无需本地 git 环境）</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- footer -->
+    <div class="mt-10 text-center text-xs text-slate-300 pb-6">
+        五要素竞品分析 · Workflow Guide · 由技能体系自动执行
+    </div>
+
+</div>
+</body>
+</html>
